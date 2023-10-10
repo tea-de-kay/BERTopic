@@ -35,10 +35,10 @@ def visualize_hierarchy(topic_model,
                      Either 'left' or 'bottom'
         topics: A selection of topics to visualize
         top_n_topics: Only select the top n most frequent topics
-        custom_labels: If bool, whether to use custom topic labels that were defined using 
+        custom_labels: If bool, whether to use custom topic labels that were defined using
                        `topic_model.set_topic_labels`.
                        If `str`, it uses labels from other aspects, e.g., "Aspect1".
-                       NOTE: Custom labels are only generated for the original 
+                       NOTE: Custom labels are only generated for the original
                        un-merged topics.
         title: Title of the plot.
         width: The width of the figure. Only works if orientation is set to 'left'
@@ -53,10 +53,10 @@ def visualize_hierarchy(topic_model,
                           in `topic_model.hierarchical_topics`.
         distance_function: The distance function to use on the c-TF-IDF matrix. Default is:
                            `lambda x: 1 - cosine_similarity(x)`.
-                            You can pass any function that returns either a square matrix of 
-                            shape (n_samples, n_samples) with zeros on the diagonal and 
-                            non-negative values or condensed distance matrix of shape 
-                            (n_samples * (n_samples - 1) / 2,) containing the upper 
+                            You can pass any function that returns either a square matrix of
+                            shape (n_samples, n_samples) with zeros on the diagonal and
+                            non-negative values or condensed distance matrix of shape
+                            (n_samples * (n_samples - 1) / 2,) containing the upper
                             triangular of the distance matrix.
                            NOTE: Make sure to use the same `distance_function` as used
                            in `topic_model.hierarchical_topics`.
@@ -97,7 +97,7 @@ def visualize_hierarchy(topic_model,
     style="width:1000px; height: 680px; border: 0px;""></iframe>
     """
     if distance_function is None:
-        distance_function = lambda x: 1 - cosine_similarity(x)
+        distance_function = lambda x: np.clip(1 - cosine_similarity(x), a_min=0, a_max=None)
 
     if linkage_function is None:
         linkage_function = lambda x: sch.linkage(x, 'ward', optimal_ordering=True)
@@ -121,7 +121,7 @@ def visualize_hierarchy(topic_model,
         embeddings = topic_model.c_tf_idf_[indices]
     else:
         embeddings = np.array(topic_model.topic_embeddings_)[indices]
-        
+
     # Annotations
     if hierarchical_topics is not None and len(topics) == len(freq_df.Topic.to_list()):
         annotations = _get_annotations(topic_model=topic_model,
@@ -233,10 +233,10 @@ def _get_annotations(topic_model,
                           in `topic_model.hierarchical_topics`.
         distance_function: The distance function to use on the c-TF-IDF matrix. Default is:
                            `lambda x: 1 - cosine_similarity(x)`.
-                            You can pass any function that returns either a square matrix of 
-                            shape (n_samples, n_samples) with zeros on the diagonal and 
-                            non-negative values or condensed distance matrix of shape 
-                            (n_samples * (n_samples - 1) / 2,) containing the upper 
+                            You can pass any function that returns either a square matrix of
+                            shape (n_samples, n_samples) with zeros on the diagonal and
+                            non-negative values or condensed distance matrix of shape
+                            (n_samples * (n_samples - 1) / 2,) containing the upper
                             triangular of the distance matrix.
                            NOTE: Make sure to use the same `distance_function` as used
                            in `topic_model.hierarchical_topics`.
